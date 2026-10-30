@@ -68,6 +68,30 @@ int add_child(ntree* t,ntree* node){
     return 1;
 }
 
+int add_child_front(ntree*t, ntree* node){
+
+    if(t==NULL || node==NULL) return 0;
+
+    if(t->cant == t->max_size){ // resize con realloc
+
+        int new_size=(t->max_size==0)? 2 : t->max_size*2;
+
+        ntree** aux=realloc(t->child,new_size*sizeof(ntree*));
+        if(aux==NULL){
+            return 0;
+        }
+        t->child=aux;
+        t->max_size=new_size;
+    }
+    for(int j=t->cant;j>0;j--){
+        t->child[j]=t->child[j-1];
+    }
+    t->child[0]=node;
+    t->cant++;
+    return 1;
+
+}
+
 
 
 void print_int(int val){
@@ -266,6 +290,72 @@ int path(ntree* root,NTREE_ELEM node_val,int cmp(NTREE_ELEM,NTREE_ELEM),void pri
     return result;
 }
 
+//ejercicio 4c
+void delete_node_from_tree(ntree* to_remove,ntree* father){
+    if(father!=NULL){
+    for(int i=0;i<father->cant;i++){
+        if(father->child[i]==to_remove){
+            for(int j=i;j<father->cant-1;j++){
+                father->child[j]=father->child[j+1];
+            }
+            father->cant--;
+            return;
+        }
+    }
+}
 
+}
+ntree* remove_ntree_node(NTREE_ELEM to_remove,ntree* root,ntree* father,int cmp(NTREE_ELEM,NTREE_ELEM)){
 
+    if(root==NULL)return NULL;
+    ntree* found=NULL;
+    if(cmp(to_remove,root->data)==0){
+        found=root;
+        if(found->cant==0){
+            delete_node_from_tree(found,father);
+        }
+        else{
+            NTREE_ELEM aux_data=found->data;
 
+            ntree* removed=found->child[0];
+            for(int i=removed->cant-1;i>=0;i--){
+                add_child_front(found,removed->child[i]);
+            }
+            free(removed->child); 
+            removed->child=NULL;
+            removed->cant=0;
+            removed->max_size=0;
+
+            found->data=removed->data;
+            removed->data=aux_data;
+            delete_node_from_tree(removed,found);
+            found=removed;
+        }
+        return found;
+    }
+    for(int i=0;i<root->cant;i++){
+        found=remove_ntree_node(to_remove,root->child[i],root,cmp);
+        if(found!=NULL){
+            return found;
+        }
+    }
+    return found;
+    
+}
+void agregar_hijo(ntree* root,ntree* node,int N){
+    if(root!=NULL && node!=NULL){
+        int M=0;
+        if(M>=N)M=0;
+        if(root->cant<N){
+            add_child_front(root,node);
+            M++;
+        }else if({
+            reducir
+        }
+    }
+}
+void reducir_grado(ntree* root,int N){
+    if(root->cant>N){
+        agregar_hijo(root->child[M],root->child[i],int N);
+    }
+}

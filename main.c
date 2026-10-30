@@ -40,19 +40,23 @@ int main(void) {
     }
 
     // Imprimo el árbol en preorden
+
     printf("Recorrido en preorden:\n");
     print_tree(root, print_int);
+    ntree* removed=remove_ntree_node(22,root,NULL,cmp_int);
+    printf("nodo removido: %d",removed->data);
     printf("Recorrido en amplitud:\n");
     print_tree_bfs(root,print_int_with_level);
     printf("impresion identada\n");
     print_tree2(root,print_int2,0);
     printf("la cantidad de nodos del arbol es: %d\n",cantidad_nodos(root));
-    printf("el grado del arbol es: %d",grado(root));
-    printf("camino desde 50 a la raiz:");
-    path(root,50,cmp_int,print_path);
+    printf("el grado del arbol es: %d\n",grado(root));
+    printf("camino desde 32 a la raiz:");
+    path(root,32,cmp_int,print_path);
 
     // Libero todo el árbol
     free_ntree(root,NULL);
+    free_ntree(removed,NULL);
 
     return 0;
 }

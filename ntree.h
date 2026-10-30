@@ -30,3 +30,4 @@ int grado(ntree* root);
 int path(ntree* root,NTREE_ELEM node_val,int cmp(NTREE_ELEM,NTREE_ELEM),void print_node(NTREE_ELEM,int));
 int cmp_int(int a,int b);
 void print_path(int val,int first);
+ntree* remove_ntree_node(NTREE_ELEM to_remove,ntree* root,ntree* father,int cmp(NTREE_ELEM,NTREE_ELEM));
