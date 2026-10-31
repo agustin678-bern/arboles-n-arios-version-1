@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "queue_dynamic.h"
-
+#include "stack_dynamic.h"
 typedef struct _empleado empleado;
 
 #define NTREE_ELEM int
@@ -31,3 +31,5 @@ int path(ntree* root,NTREE_ELEM node_val,int cmp(NTREE_ELEM,NTREE_ELEM),void pri
 int cmp_int(int a,int b);
 void print_path(int val,int first);
 ntree* remove_ntree_node(NTREE_ELEM to_remove,ntree* root,ntree* father,int cmp(NTREE_ELEM,NTREE_ELEM));
+void reducir_grado(ntree* root,int N);
+void print_camino_entre_nodos(ntree* A,ntree* B,ntree* root, void print(NTREE_ELEM));

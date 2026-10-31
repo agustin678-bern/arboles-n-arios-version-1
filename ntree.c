@@ -342,20 +342,152 @@ ntree* remove_ntree_node(NTREE_ELEM to_remove,ntree* root,ntree* father,int cmp(
     return found;
     
 }
-void agregar_hijo(ntree* root,ntree* node,int N){
-    if(root!=NULL && node!=NULL){
+void reducir_grado(ntree* root,int N){
+    if(root==NULL)return;
+    if(root->cant>N){
         int M=0;
-        if(M>=N)M=0;
-        if(root->cant<N){
-            add_child_front(root,node);
+        for(int i=N;i<root->cant;i++){
+
+            if(M>=N)M=0;
+            printf("agregando nodo %d a padre %d",root->child[i]->data,root->child[M]->data);
+            add_child(root->child[M],root->child[i]);
             M++;
-        }else if({
-            reducir
+        }
+        root->cant=N;
+    }
+    for(int i=0;i<root->cant;i++){
+        reducir_grado(root->child[i],N);
+    }
+}
+// ejercicio 5
+int arboles_identicos(ntree* r1,ntree* r2, int cmp(NTREE_ELEM,NTREE_ELEM)){
+    if(r1==NULL && r2==NULL)return 1;
+    if(r1==NULL || r2==NULL)return 0;
+    int result=1;
+    if(r1->cant!=r2->cant || cmp(r1->data,r2->data)!=0){
+        result=0;
+    }else{
+        for(int i=0;i<r1->cant;i++){
+            result=arboles_identicos(r1->child[i],r2->child[i],cmp);
+            if(result==0){
+                return result;
+            }
         }
     }
+    return result;
 }
-void reducir_grado(ntree* root,int N){
-    if(root->cant>N){
-        agregar_hijo(root->child[M],root->child[i],int N);
+// ejercicio 6
+int cantidad_caminos(ntree* root,int k){
+
+    if(root==NULL)return 0;
+    if(root->cant==0 && k==root->data) return 1;
+    else if(root->cant==0 && k!=0)return 0;
+
+    int result=0;
+    for(int i=0;i<root->cant;i++){
+        result+=cantidad_caminos(root->child[i],k-root->data);
     }
+    return result;
 }
+
+int almacenar_camino(ntree* root,ntree* n,queue* q){
+    if(root==NULL)return 0;
+    if(root==n){
+        enqueue(q,root);
+        return 1;
+    }
+    for(int i=0;i<root->cant;i++){
+        int result=almacenar_camino(root->child[i],n,q);
+        if(result==1){
+            enqueue(q,root);
+            return result;
+        }
+    }
+    return 0;
+}
+// ejercicio 7 hecho con dos colas y una pila, un quilombo, mejor haber almacenado el camino en dos arrays
+void print_camino_entre_nodos(ntree* A,ntree* B,ntree* root, void print(NTREE_ELEM)){
+
+    if(root==NULL || A==NULL || B==NULL ) return;
+
+    queue* qA=queue_new();
+    almacenar_camino(root,A,qA);
+    queue* qB=queue_new();
+    almacenar_camino(root,B,qB);
+    stack* aux=stack_new();
+    int found=0;
+    while(!queue_isempty(qA) && !found){
+
+        ntree* nodeA=dequeue(qA);
+        ntree* nodeB=NULL;
+
+        print(nodeA->data);
+
+        int cantB=queue_getsize(qB);
+
+        for(int i=0;i<cantB;i++){
+            nodeB=dequeue(qB);
+            if(nodeA==nodeB){
+                found=1;
+            }
+            enqueue(qB,nodeB);
+        }   
+        
+        if(found){
+            nodeB=dequeue(qB);
+            while(!queue_isempty(qB) && nodeB!=nodeA){
+                push(aux,nodeB);
+                nodeB=dequeue(qB);
+            }
+            while(!stack_isempty(aux)){
+                print(pop(aux)->data);
+            }
+        }
+    }
+    stack_free(aux);
+    queue_free(qA);
+    queue_free(qB);
+}
+//ejercicio 8
+int height(ntree* root){
+    if(root==NULL)return 0;
+    if(root->cant==0)return 0;
+    int max_h=height(root->child[0]);
+    for(int i=1;i<root->cant;i++){
+        int h=height(root->child[i]);
+        if(h>max_h){
+            max_h=h;
+        }
+    }
+    return 1+max_h;
+}
+//ejercicio 8
+int is_balanced(ntree* root){
+
+    if(root==NULL)return 1;
+    if(root->cant==0)return 1;
+
+    int max_h=height(root->child[0]);
+    int min_h=max_h;
+    int result=1;
+
+    for(int i=1;i<root->cant;i++){
+        int h=height(root->child[i]);
+        if(h>max_h){
+            max_h=h;
+        }if(h<min_h){
+            min_h=h;
+        }
+    }
+    if(max_h-min_h>1){
+        return 0;
+    }
+    for(int i=0;i<root->cant;i++){
+        result=is_balanced(root->child[i]);
+        if(result==0){
+            return result;
+        }
+    }
+    return result;
+}
+//ejercicio 9

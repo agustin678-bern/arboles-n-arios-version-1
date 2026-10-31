@@ -43,21 +43,24 @@ int main(void) {
 
     printf("Recorrido en preorden:\n");
     print_tree(root, print_int);
-    ntree* removed=remove_ntree_node(22,root,NULL,cmp_int);
-    printf("nodo removido: %d",removed->data);
+    printf("grado reducido a 3\n");
+    reducir_grado(root,3);
+    // ntree* removed=remove_ntree_node(22,root,NULL,cmp_int);
+    // printf("nodo removido: %d",removed->data);
     printf("Recorrido en amplitud:\n");
     print_tree_bfs(root,print_int_with_level);
     printf("impresion identada\n");
     print_tree2(root,print_int2,0);
     printf("la cantidad de nodos del arbol es: %d\n",cantidad_nodos(root));
     printf("el grado del arbol es: %d\n",grado(root));
-    printf("camino desde 32 a la raiz:");
-    path(root,32,cmp_int,print_path);
+    printf("camino desde 46 a la raiz:");
+    path(root,46,cmp_int,print_path);
 
+    printf("camino del nodo 40 al 45\n");
+    print_camino_entre_nodos(n31,n34->child[2]->child[0],root,print_int);
     // Libero todo el árbol
     free_ntree(root,NULL);
-    free_ntree(removed,NULL);
+    // free_ntree(removed,NULL);
 
     return 0;
 }
-
